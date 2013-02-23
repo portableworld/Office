@@ -9,10 +9,10 @@ module Office
     delegate :range, to: :ws
     delegate :visible=, to: :xl
 
-    DOWN    = -4121
+    DOWN     = -4121
     TO_LEFT  = -4159
     TO_RIGHT = -4161
-    UP      = -4162
+    UP       = -4162
 
     SHEET_HIDDEN      =  0
     SHEET_VERY_HIDDEN =  2
@@ -22,15 +22,13 @@ module Office
       # TODO - Check to see if file exists.
       # If false, it should create a new file
       @xl = WIN32OLE.new('Excel.Application')
-        @file_path = file_path
+      @file_path = file_path
       puts "Opening #@file_path..."
-      if password.nil?
-        @wb = @xl.workbooks.open(@file_path)
-      else
-        @wb = @xl.workbooks.open(@file_path, false, false, nil, password, password)
-      end
+      @wb = File.exists?(@file_path) ? open_workbook(password) : new_workbook(password)
       sheet(1)
     end
+
+
 
     # Allow for usage Excel.open(file_path) to create new object
     class << self
@@ -273,6 +271,18 @@ module Office
    		return TO_RIGHT  if direction == :right
    		return TO_LEFT 	 if direction == :left
    		raise ArgumentError, 'direction should be either :left, :right, :up, or :down'
-   	end
+     end
+
+    def open_workbook(password)
+      if password.nil?
+        @xl.workbooks.open(@file_path)
+      else
+        @xl.workbooks.open(@file_path, false, false, nil, password, password)
+      end
+    end
+
+    def new_workbook(password)
+      @xl.workbooks.add
+    end
   end
 end
