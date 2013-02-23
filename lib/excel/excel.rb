@@ -171,8 +171,6 @@ module Office
         when TO_LEFT
           col_offset = -1
       end
-      # require 'pry'
-      # binding.pry
       last_cell.offset(row_offset, col_offset)
     end
 
@@ -258,25 +256,23 @@ module Office
    		self
    	end
 
-
      protected
 
-
    	def get_range_direction(from, to)
-   		return DOWN 	if from[0] < to[0]
-   		return UP   	if from[0] > to[0]
+   		return DOWN 	   if from[0] < to[0]
+   		return UP   	   if from[0] > to[0]
    		return TO_RIGHT  if from[1..-1] < to[1..-1]
 
    		TO_LEFT
    	end
 
    	def get_direction(direction)
-       # TODO - Take symbols as a parameter
-   		return DOWN 	if direction.downcase   == 'down'
-   		return UP   	if direction.downcase   == 'up'
-   		return TO_RIGHT  if direction.downcase == 'right'
-   		return TO_LEFT 	if direction.downcase == 'left'
-   		raise ArgumentError, 'direction should be either left, right, up, or down'
+      direction.downcase.to_sym if direction.respond_to? :downcase
+   		return DOWN 	   if direction == :down
+   		return UP   	   if direction == :up
+   		return TO_RIGHT  if direction == :right
+   		return TO_LEFT 	 if direction == :left
+   		raise ArgumentError, 'direction should be either :left, :right, :up, or :down'
    	end
   end
 end
